@@ -1,0 +1,10 @@
+com\mycompany\MyWebAppApplication.class
+com\mycompany\model\user\UserController.class
+com\mycompany\model\user\UserService.class
+com\mycompany\model\user\UserRepository.class
+com\mycompany\model\user\User.class
+com\mycompany\model\fundraising\Fundraising.class
+com\mycompany\MainController.class
+com\mycompany\WebSecurityConfig.class
+com\mycompany\model\Category.class
+com\mycompany\model\transaction\Transaction.class
