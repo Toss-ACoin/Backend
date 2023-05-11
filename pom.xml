@@ -107,7 +107,7 @@
           <manifest>
             <addClasspath>true</addClasspath>
             <classpathPrefix>lib/</classpathPrefix>
-            <mainClass>com.mycompany.MainController</mainClass>
+            <mainClass>com.mycompany.MyWebAppApplication</mainClass>
           </manifest>
         </archive>
       </configuration>
