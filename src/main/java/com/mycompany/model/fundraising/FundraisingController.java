@@ -4,6 +4,7 @@ import com.mycompany.model.user.UserRepository;
 import com.nimbusds.jose.shaded.json.JSONArray;
 import com.nimbusds.jose.shaded.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.json.*;
@@ -11,6 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import javax.mail.Multipart;
+import java.security.Principal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -52,13 +56,17 @@ public class FundraisingController {
         return new JSONObject();
     }
 
-    @GetMapping("/createFundraising")
+
     @ResponseBody
-    public JSONObject createFundraising(Authentication authentication){
-        Fundraising fundraising = jsonToFund(new org.json.JSONObject(authentication.getPrincipal()), authentication.getName());
+    @GetMapping("/createFundraising")
+    public JSONObject createFundraising(Authentication authentication, @RequestBody String data) throws ParseException {
+        data = data.replace("createFundraising?", "");
+
+        Fundraising fundraising = jsonToFund(new org.json.JSONObject(data), authentication.getName());
         fundraisingRepository.save(fundraising);
 
         return fundraisingToJSON(fundraising);
+
     }
 
     public JSONObject fundraisingToJSON(Fundraising fund){
@@ -77,17 +85,19 @@ public class FundraisingController {
         return jsonObj;
     }
 
-    public Fundraising jsonToFund(org.json.JSONObject jsonObject, String ownerName){
+    public Fundraising jsonToFund(org.json.JSONObject jsonObject, String ownerName) throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
         Fundraising fundraising = new Fundraising();
-        fundraising.setFundraisingStart(new Date(jsonObject.getJSONObject("attributes").getString("fundraising_start")));
-        fundraising.setFundraisingEnd(new Date(jsonObject.getJSONObject("attributes").getString("fundraising_end")));
-        fundraising.setTitle(jsonObject.getJSONObject("attributes").getString("title"));
-        fundraising.setGoal(Integer.parseInt(jsonObject.getJSONObject("attributes").getString("goal")));
-        fundraising.setDescription(jsonObject.getJSONObject("attributes").getString("description"));
+        fundraising.setTitle(jsonObject.getString("title"));
+        fundraising.setFundraisingStart(format.parse(jsonObject.getString("fundraising_start")));
+        fundraising.setFundraisingEnd(format.parse(jsonObject.getString("fundraising_end")));
+        fundraising.setGoal(Integer.parseInt(jsonObject.getString("goal")));
+        fundraising.setDescription(jsonObject.getString("description"));
         fundraising.setCollectedMoney(0);
         fundraising.setAvailable(false);
         fundraising.setOwner(userRepository.getUserByEmail(ownerName));
-        //fundraising.setImage(jsonObject.getJSONObject("attributes").getString("image").getBytes());
+        //fundraising.setImage(jsonObject.getString("image").getBytes());
 
         return fundraising;
     }
