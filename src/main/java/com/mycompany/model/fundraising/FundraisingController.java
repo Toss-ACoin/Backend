@@ -36,11 +36,22 @@ public class FundraisingController {
         for(Fundraising fund: funds) {
             jsonArray.add(fundraisingToJSON(fund));
         }
-
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("array", jsonArray);
 
-        System.out.println(jsonObject);
+        return jsonObject;
+    }
+
+    @GetMapping("/search")
+    public JSONObject searchByFunds(@RequestParam(name = "phrase")String phrase){
+        List<Fundraising> funds = fundraisingRepository.findAllByTitleContainsOrDescriptionContains(phrase, phrase);
+        JSONArray jsonArray = new JSONArray();
+        for(Fundraising fund: funds) {
+            jsonArray.add(fundraisingToJSON(fund));
+        }
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("array", jsonArray);
+
         return jsonObject;
     }
 
@@ -49,15 +60,12 @@ public class FundraisingController {
     @ResponseBody
     public JSONObject getFundraising(@RequestParam(name = "id")Long id){
         Optional<Fundraising> optionalFundraising = fundraisingRepository.findById(id);
-        if(optionalFundraising.isPresent()) {
-            return fundraisingToJSON(optionalFundraising.get());
-        }
-        return new JSONObject();
+        return optionalFundraising.map(FundraisingController::fundraisingToJSON).orElseGet(JSONObject::new);
     }
 
 
     @ResponseBody
-    @GetMapping("/createFundraising")
+    @PostMapping("/createFundraising")
     public JSONObject createFundraising(Authentication authentication, @RequestBody String data) throws ParseException {
         data = data.replace("createFundraising?", "");
 

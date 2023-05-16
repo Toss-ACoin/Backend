@@ -4,10 +4,7 @@ import com.mycompany.model.fundraising.Fundraising;
 import com.mycompany.model.fundraising.FundraisingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.json.*;
 
 
@@ -21,8 +18,25 @@ public class UserController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    UserService userService;
     @Autowired
     FundraisingRepository fundraisingRepository;
+
+
+    @GetMapping("/loginBasic")
+    @ResponseBody
+    public boolean tryToLogin(Authentication authentication){
+        return authentication.isAuthenticated();
+    }
+
+    @PostMapping("/register")
+    public boolean registerUser(@RequestBody JSONObject jsonObject){
+        System.out.println(jsonObject); //czekamy na frontend
+        User user = userService.registerUser("Test1", "test@wp.pl", "test");
+        return user != null;
+    }
 
 
     @GetMapping("/myAccount")
@@ -42,12 +56,6 @@ public class UserController {
         jsonObject.put("email", user.getEmail());
         return jsonObject;
 
-    }
-
-    @GetMapping("/loginBasic")
-    @ResponseBody
-    public boolean tryToLogin(Authentication authentication){
-        return authentication.isAuthenticated();
     }
 
 
