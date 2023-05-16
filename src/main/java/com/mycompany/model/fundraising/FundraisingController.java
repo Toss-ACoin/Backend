@@ -32,7 +32,6 @@ public class FundraisingController {
     @ResponseBody
     JSONObject getAllFunds(){
         List<Fundraising> funds = fundraisingRepository.findAllByAvailableIsTrueOrderByFundraisingStart();
-        System.out.println("/home");
         JSONArray jsonArray = new JSONArray();
         for(Fundraising fund: funds) {
             jsonArray.add(fundraisingToJSON(fund));
@@ -69,7 +68,7 @@ public class FundraisingController {
 
     }
 
-    public JSONObject fundraisingToJSON(Fundraising fund){
+    public static JSONObject fundraisingToJSON(Fundraising fund){
         JSONObject jsonObj = new JSONObject();
 
         jsonObj.put("id", fund.getId());

@@ -4,15 +4,18 @@ import com.mycompany.model.fundraising.Fundraising;
 import com.mycompany.model.fundraising.FundraisingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.json.*;
-import org.springframework.web.servlet.view.RedirectView;
 
 
 import java.util.List;
 
+import static com.mycompany.model.fundraising.FundraisingController.fundraisingToJSON;
+
+@CrossOrigin(origins = {"https://frontend-tossacoin.vercel.app", "http://localhost:5173"})
 @RestController
 public class UserController {
 
@@ -41,49 +44,28 @@ public class UserController {
 
     }
 
-    @GetMapping("/login")
+    @GetMapping("/loginBasic")
     @ResponseBody
-    public RedirectView welcome(Authentication authentication){
-        JSONObject jsonObject = new JSONObject(authentication.getPrincipal());
-        String email = jsonObject.getJSONObject("attributes").getString("email");
-
-        if(userRepository.existsByEmail(email))
-            return new RedirectView("/home");
-
-        User user = new User();
-        user.setEmail(email);
-        user.setRole(UserRole.USER);
-        user.setLoginType(LoginType.OAUTH2);
-
-        userRepository.save(user);
-
-        return new RedirectView("/home");
+    public boolean tryToLogin(Authentication authentication){
+        return authentication.isAuthenticated();
     }
 
 
     @GetMapping("/myFundraising")
     @ResponseBody
-    com.nimbusds.jose.shaded.json.JSONArray getMyFund(Authentication authentication){
+    com.nimbusds.jose.shaded.json.JSONObject getMyFund(Authentication authentication){
         User user = userRepository.getUserByEmail(authentication.getName());
         List<Fundraising> funds = fundraisingRepository.findAllByOwnerAndAvailableIsTrueOrderByCollectedMoney(user);
         com.nimbusds.jose.shaded.json.JSONArray jsonArray = new com.nimbusds.jose.shaded.json.JSONArray();
         for(Fundraising fund: funds)
         {
-            com.nimbusds.jose.shaded.json.JSONObject jsonObj = new com.nimbusds.jose.shaded.json.JSONObject();
-            jsonObj.put("fundraising_start",fund.getFundraisingStart());
-            jsonObj.put("fundraising_end", fund.getFundraisingEnd());
-            jsonObj.put("title", fund.getTitle());
-            jsonObj.put("collected_money",fund.getCollectedMoney());
-            jsonObj.put("goal", fund.getGoal());
-            jsonObj.put("image", fund.getImage());
-            jsonObj.put("owner_name", fund.getOwner().getName());
-            jsonObj.put("owner_surname", fund.getOwner().getSurname());
-
-            jsonArray.add(jsonObj);
-
+            jsonArray.add(fundraisingToJSON(fund));
         }
 
-        return jsonArray;
+        com.nimbusds.jose.shaded.json.JSONObject jsonObject = new com.nimbusds.jose.shaded.json.JSONObject();
+        jsonObject.put("array", jsonArray);
+
+        return jsonObject;
 
     }
 
