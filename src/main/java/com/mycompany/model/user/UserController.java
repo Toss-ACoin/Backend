@@ -3,6 +3,8 @@ package com.mycompany.model.user;
 import com.mycompany.model.fundraising.Fundraising;
 import com.mycompany.model.fundraising.FundraisingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.json.*;
@@ -31,11 +33,15 @@ public class UserController {
         return authentication.isAuthenticated();
     }
 
-    @PostMapping("/register")
-    public boolean registerUser(@RequestBody JSONObject jsonObject){
-        System.out.println(jsonObject); //czekamy na frontend
-        User user = userService.registerUser("Test1", "test@wp.pl", "test");
-        return user != null;
+    //@PostMapping("/register")
+    @RequestMapping(value = "/register", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public boolean registerUser(@RequestBody HttpEntity<String> httpEntity){
+        System.out.println("register");
+        System.out.println(httpEntity.getBody()); //czekamy na frontend
+        //User user = userService.registerUser("Test1", "test@wp.pl", "test");
+        //return user != null;
+        return false;
     }
 
 
