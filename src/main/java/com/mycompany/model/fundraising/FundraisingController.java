@@ -1,5 +1,8 @@
 package com.mycompany.model.fundraising;
 
+import com.mycompany.model.category.Category;
+import com.mycompany.model.category.CategoryRepository;
+import com.mycompany.model.donation.Donation;
 import com.mycompany.model.user.UserRepository;
 import com.nimbusds.jose.shaded.json.JSONArray;
 import com.nimbusds.jose.shaded.json.JSONObject;
@@ -27,6 +30,8 @@ public class FundraisingController {
     UserRepository userRepository;
     @Autowired
     FundraisingRepository fundraisingRepository;
+    @Autowired
+    CategoryRepository categoryRepository;
 
     @GetMapping("/home")
     @ResponseBody
@@ -79,6 +84,7 @@ public class FundraisingController {
     public static JSONObject fundraisingToJSON(Fundraising fund){
         JSONObject jsonObj = new JSONObject();
 
+
         jsonObj.put("id", fund.getId());
         jsonObj.put("fundraising_start",fund.getFundraisingStart());
         jsonObj.put("fundraising_end", fund.getFundraisingEnd());
@@ -88,6 +94,27 @@ public class FundraisingController {
         jsonObj.put("image", fund.getImage());
         jsonObj.put("owner_name", fund.getOwner().getName());
         jsonObj.put("owner_surname", fund.getOwner().getSurname());
+        jsonObj.put("description", fund.getDescription());
+        jsonObj.put("available", fund.isAvailable());
+
+        JSONArray jsonArray = new JSONArray();
+        for(Category category : fund.getCategory()){
+            jsonArray.add(category.getName());
+        }
+
+        jsonObj.put("categories", jsonArray);
+
+        jsonArray = new JSONArray();
+
+        for(Donation donation : fund.getDonations()){
+            JSONObject donationJSON = new JSONObject();
+            donationJSON.put("fund_id", donation.getFundraisingID().getId());
+            donationJSON.put("amount", donation.getAmount());
+            jsonArray.add(donationJSON);
+        }
+        jsonObj.put("donations", jsonArray);
+
+        System.out.println(jsonObj);
 
         return jsonObj;
     }

@@ -1,6 +1,7 @@
 package com.mycompany.model.fundraising;
 
 import com.mycompany.model.category.Category;
+import com.mycompany.model.donation.Donation;
 import lombok.*;
 
 import com.mycompany.model.user.User;
@@ -28,6 +29,8 @@ public class Fundraising {
     @Column(name = "CategoryID")
     private List<Category> category;
 
+    @OneToMany
+    private List<Donation> donations;
 
     @Column(name = "Goal")
     private int goal;
