@@ -24,57 +24,5 @@ public class TransactionController {
     @Autowired
     TransactionRepository transactionRepository;
 
-    @GetMapping("/accessToken")
-    @ResponseBody
-    public JSONObject getAccessTokenToPayment(){
-        JSONObject token = new JSONObject();
 
-        System.out.println(System.getenv("CLIENT_ID_PAYU"));
-        System.out.println(System.getenv("CLIENT_SECRECT_PAYU"));
-
-//        try{
-//            URL url = new URL("https://secure.snd.payu.com/pl/standard/user/oauth/authorize");
-//            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-//            con.setRequestMethod("POST");
-//
-//            Map<String, String> parameters = new HashMap<>();
-//            System.out.println(System.getenv("CLIENT_ID_PAYU"));
-//            System.out.println(System.getenv("CLIENT_SECRECT_PAYU"));
-//            parameters.put("grant_type", "client_credentials");
-//            parameters.put("client_id", System.getenv("CLIENT_ID_PAYU"));
-//            parameters.put("client_secret", System.getenv("CLIENT_SECRECT_PAYU"));
-//
-//            con.setDoOutput(true);
-//            DataOutputStream out = new DataOutputStream(con.getOutputStream());
-//            out.writeBytes(ParameterStringBuilder.getParamsString(parameters));
-//            out.flush();
-//            out.close();
-//
-//            con.connect();
-//
-//            int status = con.getResponseCode();
-//            System.out.println("Status: " + status);
-//
-//            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-//            String inputLine;
-//            StringBuilder content = new StringBuilder();
-//            while ((inputLine = in.readLine()) != null) {
-//                content.append(inputLine);
-//            }
-//            in.close();
-//
-//            System.out.println("Response: " + content);
-//
-//            JSONObject response = new JSONObject(content.toString());
-//            token.put("token",response.get("access_token"));
-//
-//            con.disconnect();
-//
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-        token.put("token", "dupa");
-
-        return token;
-    }
 }
