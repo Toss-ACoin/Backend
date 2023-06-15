@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = {"https://frontend-tossacoin.vercel.app", "http://localhost:5173"})
+@CrossOrigin(origins = {"https://frontend-eight-lime-76.vercel.app/", "http://localhost:5173"})
 @RestController
 public class FundraisingController {
 
