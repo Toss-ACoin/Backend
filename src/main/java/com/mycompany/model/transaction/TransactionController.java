@@ -24,5 +24,52 @@ public class TransactionController {
     @Autowired
     TransactionRepository transactionRepository;
 
+    @GetMapping("/accessToken")
+    @ResponseBody
+    public com.nimbusds.jose.shaded.json.JSONObject getAccessTokenToPayment(){
+        com.nimbusds.jose.shaded.json.JSONObject token = new com.nimbusds.jose.shaded.json.JSONObject();
 
+        try{
+            URL url = new URL("https://secure.snd.payu.com/pl/standard/user/oauth/authorize");
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("POST");
+
+            Map<String, String> parameters = new HashMap<>();
+
+            parameters.put("grant_type", "client_credentials");
+            parameters.put("client_id", "467060");
+            parameters.put("client_secret", "f0120ec367af90950345c878fdb823f2");
+
+            con.setDoOutput(true);
+            DataOutputStream out = new DataOutputStream(con.getOutputStream());
+            out.writeBytes(ParameterStringBuilder.getParamsString(parameters));
+            out.flush();
+            out.close();
+
+            con.connect();
+
+            int status = con.getResponseCode();
+            System.out.println("Status: " + status);
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuilder content = new StringBuilder();
+            while ((inputLine = in.readLine()) != null) {
+                content.append(inputLine);
+            }
+            in.close();
+
+            System.out.println("Response: " + content);
+
+            org.json.JSONObject response = new org.json.JSONObject(content.toString());
+            token.put("token",response.get("access_token"));
+
+            con.disconnect();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return token;
+    }
 }
