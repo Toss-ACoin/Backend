@@ -31,9 +31,11 @@ public class TransactionController {
             con.setRequestMethod("POST");
 
             Map<String, String> parameters = new HashMap<>();
+            System.out.println(System.getenv("CLIENT_ID_PAYU"));
+            System.out.println(System.getenv("CLIENT_SECRECT_PAYU"));
             parameters.put("grant_type", "client_credentials");
-            parameters.put("client_id", "467060");
-            parameters.put("client_secret", "f0120ec367af90950345c878fdb823f2");
+            parameters.put("client_id", System.getenv("CLIENT_ID_PAYU"));
+            parameters.put("client_secret", System.getenv("CLIENT_SECRECT_PAYU"));
 
             con.setDoOutput(true);
             DataOutputStream out = new DataOutputStream(con.getOutputStream());
@@ -57,16 +59,13 @@ public class TransactionController {
             System.out.println("Response: " + content);
 
             JSONObject response = new JSONObject(content.toString());
-            response.get("access_token");
+            token.put("token",response.get("access_token"));
 
             con.disconnect();
 
         }catch (Exception e){
             e.printStackTrace();
         }
-
-
-
 
         return token;
     }
