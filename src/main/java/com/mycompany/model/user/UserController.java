@@ -14,7 +14,7 @@ import java.util.List;
 
 import static com.mycompany.model.fundraising.FundraisingController.fundraisingToJSON;
 
-@CrossOrigin(origins = {"https://frontend-tossacoin.vercel.app", "http://localhost:5173"})
+@CrossOrigin(origins = {"https://frontend-eight-lime-76.vercel.app/", "http://localhost:5173"})
 @RestController
 public class UserController {
 
