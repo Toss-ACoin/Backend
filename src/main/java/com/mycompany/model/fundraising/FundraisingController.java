@@ -10,6 +10,7 @@ import com.nimbusds.jose.shaded.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 import org.json.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -82,6 +83,9 @@ public class FundraisingController {
 //        fundraisingRepository.save(fundraising);
 //
 //        return fundraisingToJSON(fundraising);
+
+        Collection<? extends GrantedAuthority> auth = authentication.getAuthorities();
+        System.out.println(auth);
 
         System.out.println(data);
 
