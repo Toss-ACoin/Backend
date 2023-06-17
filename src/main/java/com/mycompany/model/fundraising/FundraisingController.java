@@ -75,13 +75,15 @@ public class FundraisingController {
 
     @ResponseBody
     @PostMapping("/createFundraising")
-    public JSONObject createFundraising(Authentication authentication, @RequestBody String data) throws ParseException {
-        data = data.replace("createFundraising?", "");
+    public void createFundraising(Authentication authentication, @RequestBody String data) throws ParseException {
+//        data = data.replace("createFundraising?", "");
+//
+//        Fundraising fundraising = jsonToFund(new org.json.JSONObject(data), authentication.getName());
+//        fundraisingRepository.save(fundraising);
+//
+//        return fundraisingToJSON(fundraising);
 
-        Fundraising fundraising = jsonToFund(new org.json.JSONObject(data), authentication.getName());
-        fundraisingRepository.save(fundraising);
-
-        return fundraisingToJSON(fundraising);
+        System.out.println(data);
 
     }
 

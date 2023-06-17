@@ -34,14 +34,20 @@ public class UserController {
     }
 
     //@PostMapping("/register")
-    @RequestMapping(value = "/register", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
-    public boolean registerUser(@RequestBody HttpEntity<String> httpEntity){
+    com.nimbusds.jose.shaded.json.JSONObject registerUser(@RequestBody String data){
+        com.nimbusds.jose.shaded.json.JSONObject status = new com.nimbusds.jose.shaded.json.JSONObject();
         System.out.println("register");
-        System.out.println(httpEntity.getBody()); //czekamy na frontend
-        //User user = userService.registerUser("Test1", "test@wp.pl", "test");
-        //return user != null;
-        return false;
+        System.out.println(data); //czekamy na frontend
+        JSONObject jsonObject = new JSONObject(data);
+        JSONObject value =  jsonObject.getJSONObject("value");
+        String name = value.getString("name");
+        String email = value.getString("email");
+        String password = value.getString("password");
+        User user = userService.registerUser(name, email, password);
+        status.put("User", user!=null);
+        return status;
     }
 
 
