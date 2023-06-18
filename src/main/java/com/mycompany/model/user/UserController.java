@@ -65,8 +65,11 @@ public class UserController {
         }
         com.nimbusds.jose.shaded.json.JSONObject jsonObject = new com.nimbusds.jose.shaded.json.JSONObject();
         jsonObject.put("role", user.getRole());
-        jsonObject.put("loginType", user.getLoginType());
+        jsonObject.put("login_type", user.getLoginType());
         jsonObject.put("name", user.getName());
+        jsonObject.put("bank_number", user.getBankNumber());
+        jsonObject.put("pesel", user.getPesel());
+        jsonObject.put("phone_number", user.getPhoneNumber());
         jsonObject.put("email", user.getEmail());
         return jsonObject;
 

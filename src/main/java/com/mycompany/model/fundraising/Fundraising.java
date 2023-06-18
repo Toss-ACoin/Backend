@@ -5,6 +5,7 @@ import com.mycompany.model.donation.Donation;
 import lombok.*;
 
 import com.mycompany.model.user.User;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Arrays;
@@ -32,31 +33,25 @@ public class Fundraising {
     @OneToMany
     private List<Donation> donations;
 
-    @Column(name = "Goal")
     private int goal;
 
-    @Column(name = "CollectedMoney")
     private int collectedMoney;
 
-    @Column(name = "Title")
     private String title;
 
-    @Column(name = "FundraisingStart")
     @Temporal(TemporalType.DATE)
     private Date fundraisingStart;
 
-    @Column(name = "FundraisingEnd")
     @Temporal(TemporalType.DATE)
     private Date fundraisingEnd;
 
     @Lob
-    @Column(name = "Image")
     private byte[] image;
 
-    @Column(name = "Description")
+    @Type(type="text")
     private String description;
 
-    @Column(name = "Available")
+
     private boolean available;
 
     public String getBasicInfo(){
