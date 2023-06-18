@@ -1,17 +1,9 @@
 package com.mycompany.model.user;
 
-import com.mycompany.PasswordGenerator;
+import com.mycompany.utilts.PasswordGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.swing.text.html.parser.Entity;
 
 @Service
 @Transactional

@@ -3,18 +3,18 @@ package com.mycompany.model.user;
 import com.mycompany.model.fundraising.Fundraising;
 import com.mycompany.model.fundraising.FundraisingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 import org.json.*;
 
 
+import java.util.Collection;
 import java.util.List;
 
 import static com.mycompany.model.fundraising.FundraisingController.fundraisingToJSON;
 
-@CrossOrigin(origins = {"https://frontend-eight-lime-76.vercel.app/", "http://localhost:5173"})
+@CrossOrigin(origins = {"https://frontend-eight-lime-76.vercel.app/", "http://localhost:5173", "https://frontend-tossacoin.vercel.app"})
 @RestController
 public class UserController {
 
@@ -29,17 +29,19 @@ public class UserController {
 
     @GetMapping("/loginBasic")
     @ResponseBody
-    public boolean tryToLogin(Authentication authentication){
-        return authentication.isAuthenticated();
+    public com.nimbusds.jose.shaded.json.JSONObject tryToLogin(Authentication authentication){
+        com.nimbusds.jose.shaded.json.JSONObject jsonObject = new com.nimbusds.jose.shaded.json.JSONObject();
+        Collection<? extends GrantedAuthority> auth = authentication.getAuthorities();
+        jsonObject.put("user_role", auth);
+        return jsonObject;
     }
 
-    //@PostMapping("/register")
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    @PostMapping("/register")
     @ResponseBody
     com.nimbusds.jose.shaded.json.JSONObject registerUser(@RequestBody String data){
         com.nimbusds.jose.shaded.json.JSONObject status = new com.nimbusds.jose.shaded.json.JSONObject();
-        System.out.println("register");
-        System.out.println(data); //czekamy na frontend
+        //System.out.println("register");
+        //System.out.println(data);
         JSONObject jsonObject = new JSONObject(data);
         JSONObject value =  jsonObject.getJSONObject("value");
         String name = value.getString("name");

@@ -1,6 +1,5 @@
 package com.mycompany.model.fundraising;
 
-import com.mycompany.ParameterStringBuilder;
 import com.mycompany.model.category.Category;
 import com.mycompany.model.category.CategoryRepository;
 import com.mycompany.model.donation.Donation;
@@ -8,26 +7,16 @@ import com.mycompany.model.user.UserRepository;
 import com.nimbusds.jose.shaded.json.JSONArray;
 import com.nimbusds.jose.shaded.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
-import org.json.*;
-import org.springframework.web.multipart.MultipartFile;
 
 
-import javax.mail.Multipart;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-@CrossOrigin(origins = {"https://frontend-eight-lime-76.vercel.app/", "http://localhost:5173"})
+@CrossOrigin(origins = {"https://frontend-eight-lime-76.vercel.app/", "http://localhost:5173", "https://frontend-tossacoin.vercel.app"})
 @RestController
 public class FundraisingController {
 

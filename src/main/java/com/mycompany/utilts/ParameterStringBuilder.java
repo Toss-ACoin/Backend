@@ -1,4 +1,4 @@
-package com.mycompany;
+package com.mycompany.utilts;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;

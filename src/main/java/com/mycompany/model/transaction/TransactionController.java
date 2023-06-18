@@ -1,8 +1,7 @@
 package com.mycompany.model.transaction;
 
 
-import com.mycompany.ParameterStringBuilder;
-import org.json.*;
+import com.mycompany.utilts.ParameterStringBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
