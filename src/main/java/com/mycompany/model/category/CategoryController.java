@@ -1,5 +1,6 @@
 package com.mycompany.model.category;
 
+import com.nimbusds.jose.shaded.json.JSONArray;
 import com.nimbusds.jose.shaded.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,10 +18,12 @@ public class CategoryController {
     @GetMapping("/category")
     public JSONObject getAllCategory(){
         JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
         List<Category> categoryList = repository.findAll();
         for (Category category: categoryList) {
-            jsonObject.put(String.valueOf(category.getId()), category.getName());
+            jsonArray.add(category.getName());
         }
+        jsonObject.put("categories_array", jsonArray);
         return jsonObject;
     }
 }
