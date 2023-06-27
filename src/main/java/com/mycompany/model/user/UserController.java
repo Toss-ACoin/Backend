@@ -1,7 +1,9 @@
 package com.mycompany.model.user;
 
+import com.mycompany.model.category.Category;
 import com.mycompany.model.fundraising.Fundraising;
 import com.mycompany.model.fundraising.FundraisingRepository;
+import com.mycompany.model.transaction.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,8 +13,6 @@ import org.json.*;
 
 import java.util.Collection;
 import java.util.List;
-
-import static com.mycompany.model.fundraising.FundraisingController.fundraisingToJSON;
 
 @CrossOrigin(origins = {"https://frontend-eight-lime-76.vercel.app/", "http://localhost:5173", "https://frontend-tossacoin.vercel.app"})
 @RestController
@@ -25,6 +25,8 @@ public class UserController {
     UserService userService;
     @Autowired
     FundraisingRepository fundraisingRepository;
+    @Autowired
+    TransactionRepository transactionRepository;
 
 
     @GetMapping("/loginBasic")
@@ -92,6 +94,49 @@ public class UserController {
 
         return jsonObject;
 
+    }
+
+    public com.nimbusds.jose.shaded.json.JSONArray getTransactionCount(long id){
+        com.nimbusds.jose.shaded.json.JSONArray jsonArray = new com.nimbusds.jose.shaded.json.JSONArray();
+        List<String> result = transactionRepository.selectAmountCount(id);
+        for(String res: result){
+            String[] split = res.split(",");
+            com.nimbusds.jose.shaded.json.JSONObject jsonObject = new com.nimbusds.jose.shaded.json.JSONObject();
+            jsonObject.put("name", split[0]);
+            jsonObject.put("numberOfPayments", split[1]);
+            jsonArray.add(jsonObject);
+        }
+        return jsonArray;
+    }
+    public com.nimbusds.jose.shaded.json.JSONObject fundraisingToJSON(Fundraising fund){
+        com.nimbusds.jose.shaded.json.JSONObject jsonObj = new com.nimbusds.jose.shaded.json.JSONObject();
+
+
+        jsonObj.put("id", fund.getId());
+        jsonObj.put("fundraising_start",fund.getFundraisingStart());
+        jsonObj.put("fundraising_end", fund.getFundraisingEnd());
+        jsonObj.put("title", fund.getTitle());
+        jsonObj.put("collected_money",fund.getCollectedMoney());
+        jsonObj.put("goal", fund.getGoal());
+        jsonObj.put("image", fund.getPictures());
+        jsonObj.put("owner_name", fund.getOwner().getName());
+        jsonObj.put("owner_surname", fund.getOwner().getSurname());
+        jsonObj.put("description", fund.getDescription());
+        jsonObj.put("available", fund.isAvailable());
+
+        com.nimbusds.jose.shaded.json.JSONArray jsonArray = new com.nimbusds.jose.shaded.json.JSONArray();
+        for(Category category : fund.getCategory()){
+            jsonArray.add(category.getName());
+        }
+
+        jsonObj.put("categories", jsonArray);
+
+        com.nimbusds.jose.shaded.json.JSONArray transactions = getTransactionCount(fund.getId());
+        jsonObj.put("transactions", transactions);
+
+        System.out.println(jsonObj);
+
+        return jsonObj;
     }
 
 }

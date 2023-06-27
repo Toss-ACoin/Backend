@@ -2,11 +2,13 @@ package com.mycompany.model.fundraising;
 
 import com.mycompany.model.category.Category;
 import com.mycompany.model.category.CategoryRepository;
-import com.mycompany.model.donation.Donation;
+import com.mycompany.model.transaction.TransactionRepository;
 import com.mycompany.model.user.UserRepository;
 import com.nimbusds.jose.shaded.json.JSONArray;
 import com.nimbusds.jose.shaded.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +28,8 @@ public class FundraisingController {
     FundraisingRepository fundraisingRepository;
     @Autowired
     CategoryRepository categoryRepository;
+    @Autowired
+    TransactionRepository transactionRepository;
 
     @GetMapping("/home")
     @ResponseBody
@@ -42,8 +46,9 @@ public class FundraisingController {
     }
 
     @GetMapping("/search")
-    public JSONObject searchByFunds(@RequestParam(name = "phrase")String phrase){
-        List<Fundraising> funds = fundraisingRepository.findAllByTitleContainsOrDescriptionContains(phrase, phrase);
+    public JSONObject searchByFunds(@RequestParam(name = "phrase")String phrase, @RequestParam(name = "page")int page){
+        List<Fundraising> funds;
+        funds = fundraisingRepository.findAllByTitleContainsOrDescriptionContains(phrase, phrase, PageRequest.of(page, 10));
         JSONArray jsonArray = new JSONArray();
         for(Fundraising fund: funds) {
             jsonArray.add(fundraisingToJSON(fund));
@@ -59,13 +64,16 @@ public class FundraisingController {
     @ResponseBody
     public JSONObject getFundraising(@RequestParam(name = "id")Long id){
         Optional<Fundraising> optionalFundraising = fundraisingRepository.findById(id);
-        return optionalFundraising.map(FundraisingController::fundraisingToJSON).orElseGet(JSONObject::new);
+        if(optionalFundraising.isPresent()){
+            return fundraisingToJSON(optionalFundraising.get());
+        }
+        return new JSONObject();
     }
 
 
     @ResponseBody
     @PostMapping("/createFundraising")
-    public void createFundraising(Authentication authentication, @RequestBody String data) throws ParseException {
+    public void createFundraising(Authentication authentication, @RequestBody String data)  {
 //        data = data.replace("createFundraising?", "");
 //
 //        Fundraising fundraising = jsonToFund(new org.json.JSONObject(data), authentication.getName());
@@ -80,7 +88,19 @@ public class FundraisingController {
 
     }
 
-    public static JSONObject fundraisingToJSON(Fundraising fund){
+    public JSONArray getTransactionCount(long id){
+        JSONArray jsonArray = new JSONArray();
+        List<String> result = transactionRepository.selectAmountCount(id);
+        for(String res: result){
+            String[] split = res.split(",");
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("name", split[0]);
+            jsonObject.put("numberOfPayments", split[1]);
+            jsonArray.add(jsonObject);
+        }
+        return jsonArray;
+    }
+    public JSONObject fundraisingToJSON(Fundraising fund){
         JSONObject jsonObj = new JSONObject();
 
 
@@ -90,7 +110,7 @@ public class FundraisingController {
         jsonObj.put("title", fund.getTitle());
         jsonObj.put("collected_money",fund.getCollectedMoney());
         jsonObj.put("goal", fund.getGoal());
-        jsonObj.put("image", fund.getImage());
+        jsonObj.put("image", fund.getPictures());
         jsonObj.put("owner_name", fund.getOwner().getName());
         jsonObj.put("owner_surname", fund.getOwner().getSurname());
         jsonObj.put("description", fund.getDescription());
@@ -103,15 +123,8 @@ public class FundraisingController {
 
         jsonObj.put("categories", jsonArray);
 
-        jsonArray = new JSONArray();
-
-        for(Donation donation : fund.getDonations()){
-            JSONObject donationJSON = new JSONObject();
-            donationJSON.put("fund_id", donation.getFundraisingID().getId());
-            donationJSON.put("amount", donation.getAmount());
-            jsonArray.add(donationJSON);
-        }
-        jsonObj.put("donations", jsonArray);
+        JSONArray transactions = getTransactionCount(fund.getId());
+        jsonObj.put("transactions", transactions);
 
         System.out.println(jsonObj);
 

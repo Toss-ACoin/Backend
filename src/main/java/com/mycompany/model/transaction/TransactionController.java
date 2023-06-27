@@ -1,74 +1,57 @@
 package com.mycompany.model.transaction;
 
 
-import com.mycompany.utilts.ParameterStringBuilder;
+import com.mycompany.model.fundraising.Fundraising;
+import com.mycompany.model.fundraising.FundraisingRepository;
+import com.mycompany.model.user.User;
+import com.mycompany.model.user.UserRepository;
+import com.nimbusds.jose.shaded.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.Optional;
 
-@CrossOrigin(origins = {"https://frontend-eight-lime-76.vercel.app/", "http://localhost:5173"})
+
+@CrossOrigin(origins = {"https://frontend-eight-lime-76.vercel.app/", "http://localhost:5173", "https://frontend-tossacoin.vercel.app"})
 @RestController
 public class TransactionController {
 
     @Autowired
     TransactionRepository transactionRepository;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    FundraisingRepository fundraisingRepository;
 
-    @GetMapping("/accessToken")
-    @ResponseBody
-    public com.nimbusds.jose.shaded.json.JSONObject getAccessTokenToPayment(){
-        com.nimbusds.jose.shaded.json.JSONObject token = new com.nimbusds.jose.shaded.json.JSONObject();
+    @PostMapping("/transaction")
+    public JSONObject saveTransaction(Authentication authentication, @RequestBody String data){
+        JSONObject jsonObject = new JSONObject();
+        Transaction transaction = new Transaction();
+        transaction.setFundraisingId(1L);
+        transaction.setDate(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+        transaction.setAmount(50);
+        transaction.setTransactionType(TransactionType.PAYPAL);
+        User user = userRepository.getUserByEmail(authentication.getName());
+        transaction.setPayerId(user.getId());
+        transactionRepository.save(transaction);
+        updateFundraising(50, 1L);
 
-        try{
-            URL url = new URL("https://secure.snd.payu.com/pl/standard/user/oauth/authorize");
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("POST");
+        jsonObject.put("complete", true);
+        return jsonObject;
+    }
 
-            Map<String, String> parameters = new HashMap<>();
-
-            parameters.put("grant_type", "client_credentials");
-            parameters.put("client_id", "467060");
-            parameters.put("client_secret", "f0120ec367af90950345c878fdb823f2");
-
-            con.setDoOutput(true);
-            DataOutputStream out = new DataOutputStream(con.getOutputStream());
-            out.writeBytes(ParameterStringBuilder.getParamsString(parameters));
-            out.flush();
-            out.close();
-
-            con.connect();
-
-            int status = con.getResponseCode();
-            System.out.println("Status: " + status);
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuilder content = new StringBuilder();
-            while ((inputLine = in.readLine()) != null) {
-                content.append(inputLine);
-            }
-            in.close();
-
-            System.out.println("Response: " + content);
-
-            org.json.JSONObject response = new org.json.JSONObject(content.toString());
-            token.put("token",response.get("access_token"));
-
-            con.disconnect();
-
-        }catch (Exception e){
-            e.printStackTrace();
+    private void updateFundraising(int amount, long id){
+        Optional<Fundraising> fundraisingOptional = fundraisingRepository.findById(id);
+        if(fundraisingOptional.isPresent()){
+            Fundraising temp = fundraisingOptional.get();
+            int collected = temp.getCollectedMoney() + amount;
+            temp.setCollectedMoney(collected);
+            fundraisingRepository.save(temp);
         }
 
-        return token;
     }
 }

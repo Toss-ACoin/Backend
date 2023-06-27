@@ -1,7 +1,6 @@
 package com.mycompany.model.fundraising;
 
 import com.mycompany.model.category.Category;
-import com.mycompany.model.donation.Donation;
 import lombok.*;
 
 import com.mycompany.model.user.User;
@@ -30,9 +29,6 @@ public class Fundraising {
     @Column(name = "CategoryID")
     private List<Category> category;
 
-    @OneToMany
-    private List<Donation> donations;
-
     private int goal;
 
     private int collectedMoney;
@@ -45,26 +41,11 @@ public class Fundraising {
     @Temporal(TemporalType.DATE)
     private Date fundraisingEnd;
 
-    @Lob
-    private byte[] image;
+    private String pictures;
 
     @Type(type="text")
     private String description;
 
-
     private boolean available;
-
-    public String getBasicInfo(){
-        return "{\n\t" +
-                "\"fundraising_start\": \""+ this.fundraisingStart+"\"\n,\t"+
-                "\"fundraising_end\": \""+ this.fundraisingEnd+"\"\n,\t"+
-                "\"title\": \""+ this.title+"\"\n,\t"+
-                "\"collected_money\": \""+ this.collectedMoney+"\"\n,\t"+
-                "\"goal\": \""+ this.goal+"\"\n,\t"+
-                "\"image\": \""+ Arrays.toString(this.image) +"\"\n,\t"+
-                "\"owner_name\": \""+ this.owner.getName()+"\"\n,\t"+
-                "\"owner_surname\": \""+ this.owner.getSurname()+"\"\n"+
-                "}";
-    }
 
 }

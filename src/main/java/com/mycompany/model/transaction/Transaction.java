@@ -11,20 +11,12 @@ import javax.persistence.*;
 @Entity
 public class Transaction {
     @Id
-    @Column(name = "ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "FundraisingID")
     private Long fundraisingId;
-
-    @Column(name = "PayerID")
     private Long payerId;
-
-    @Column(name = "Amount")
     private int amount;
-
     @Temporal(TemporalType.DATE)
-    @Column(name = "Date")
     private Date date;
 
     @Enumerated
