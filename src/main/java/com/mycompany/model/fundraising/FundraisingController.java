@@ -7,6 +7,7 @@ import com.mycompany.model.user.UserRepository;
 import com.nimbusds.jose.shaded.json.JSONArray;
 import com.nimbusds.jose.shaded.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
@@ -47,14 +48,15 @@ public class FundraisingController {
 
     @GetMapping("/search")
     public JSONObject searchByFunds(@RequestParam(name = "phrase")String phrase, @RequestParam(name = "page")int page){
-        List<Fundraising> funds;
-        funds = fundraisingRepository.findAllByTitleContainsOrDescriptionContains(phrase, phrase, PageRequest.of(page, 10));
+        Page<Fundraising> funds;
+        funds = fundraisingRepository.findAllByTitleContainsOrDescriptionContains(phrase, phrase, PageRequest.of(page, 2));
         JSONArray jsonArray = new JSONArray();
         for(Fundraising fund: funds) {
             jsonArray.add(fundraisingToJSON(fund));
         }
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("array", jsonArray);
+        jsonObject.put("pages", funds.getTotalPages());
 
         return jsonObject;
     }

@@ -41,6 +41,7 @@ public class Fundraising {
     @Temporal(TemporalType.DATE)
     private Date fundraisingEnd;
 
+    @Type(type="text")
     private String pictures;
 
     @Type(type="text")

@@ -1,6 +1,7 @@
 package com.mycompany.model.fundraising;
 
 import com.mycompany.model.user.User;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,7 +16,6 @@ public interface FundraisingRepository extends JpaRepository<Fundraising, Long> 
     List<Fundraising> findAllByOwnerAndAvailableIsTrueOrderByCollectedMoney(User user);
     List<Fundraising> findAllByAvailableIsTrueOrderByFundraisingStart();
     Optional<Fundraising> findById(Long id);
-
-    List<Fundraising> findAllByTitleContainsOrDescriptionContains(String title, String description, Pageable pageable);
+    Page<Fundraising> findAllByTitleContainsOrDescriptionContains(String title, String description, Pageable pageable);
 
 }
