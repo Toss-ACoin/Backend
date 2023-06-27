@@ -49,7 +49,7 @@ public class FundraisingController {
     @GetMapping("/search")
     public JSONObject searchByFunds(@RequestParam(name = "phrase")String phrase, @RequestParam(name = "page")int page){
         Page<Fundraising> funds;
-        funds = fundraisingRepository.findAllByTitleContainsOrDescriptionContains(phrase, phrase, PageRequest.of(page, 2));
+        funds = fundraisingRepository.findAllByTitleContainsOrDescriptionContains(phrase, phrase, PageRequest.of(page, 6));
         JSONArray jsonArray = new JSONArray();
         for(Fundraising fund: funds) {
             jsonArray.add(fundraisingToJSON(fund));
