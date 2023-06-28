@@ -73,6 +73,7 @@ public class UserController {
         jsonObject.put("pesel", user.getPesel());
         jsonObject.put("phone_number", user.getPhoneNumber());
         jsonObject.put("email", user.getEmail());
+
         return jsonObject;
 
     }
