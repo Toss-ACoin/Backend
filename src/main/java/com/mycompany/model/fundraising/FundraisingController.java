@@ -57,7 +57,8 @@ public class FundraisingController {
         funds = fundraisingRepository.findAllByTitleContainsOrDescriptionContains(phrase, phrase, PageRequest.of(page, 6));
         JSONArray jsonArray = new JSONArray();
         for(Fundraising fund: funds) {
-            jsonArray.add(fundraisingToJSON(fund));
+            if(fund.isAvailable() && fund.getFundraisingEnd().after(new Date()))
+                jsonArray.add(fundraisingToJSON(fund));
         }
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("array", jsonArray);
