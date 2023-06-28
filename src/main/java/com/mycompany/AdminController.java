@@ -13,7 +13,11 @@ import com.nimbusds.jose.shaded.json.JSONObject;
 import java.util.List;
 import com.nimbusds.jose.shaded.json.*;
 
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+
+@CrossOrigin(origins = {"https://frontend-eight-lime-76.vercel.app/", "http://localhost:5173", "https://frontend-tossacoin.vercel.app"})
 @RestController
+@RequestMapping()
 public class AdminController {
 
     @Autowired
@@ -31,7 +35,7 @@ public class AdminController {
     }
 
     //zbiorki
-    @GetMapping("/admin/funds")
+    @RequestMapping(value = "/admin/funds", method = GET)
     public JSONArray getFunds(){
         List<Fundraising> fundraisings = fundraisingRepository.findAll();
         return getFundraisings(fundraisings);
@@ -41,16 +45,18 @@ public class AdminController {
     @PatchMapping("/admin/fund")
     public JSONObject toggleFundAvailable(@RequestParam(name = "id")Long id){
         Fundraising fundraising = fundraisingRepository.getById(id);
-        fundraisingRepository.toggleAvailability(!fundraising.isAvailable(), id);
         fundraising.setAvailable(!fundraising.isAvailable());
-        return ;
+        fundraisingRepository.save(fundraising);
+        return fundraisingToJSON(fundraising);
     }
 
     //toggle uzytkownikow
-    @PostMapping("/admin/user")
-    public JSONObject toggleUserAvailable(@RequestParam(name = "id")String id){
-        JSONObject jsonObject = new JSONObject();
-        return jsonObject;
+    @PatchMapping("/admin/user")
+    public JSONObject toggleUserAvailable(@RequestParam(name = "id")Long id){
+        User user = userRepository.getById(id);
+        user.setBlocked(!user.getBlocked());
+        userRepository.save(user);
+        return getUserInfo(user);
     }
 
 
@@ -77,7 +83,7 @@ public class AdminController {
         jsonObject.put("bank_number", user.getBankNumber());
         jsonObject.put("role", user.getRole());
         jsonObject.put("login_type", user.getLoginType());
-        jsonObject.put("available", user.getBlocked());
+        jsonObject.put("blocked", user.getBlocked());
         JSONArray jsonArray = new JSONArray();
         for(Fundraising fund : user.getFundraisingIds()){
             jsonArray.add(fund.getId());
