@@ -38,6 +38,13 @@ public class User {
     @ColumnDefault("false")
     private boolean blocked;
 
+    public boolean getBlocked(){
+        return blocked;
+    }
+
+    public void setBlocked(boolean b){
+        blocked = b;
+    }
 
     public String getBasicInfo(){
         return "{\n\t" +
