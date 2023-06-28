@@ -3,6 +3,7 @@ package com.mycompany.model.fundraising;
 import com.mycompany.model.category.Category;
 import com.mycompany.model.category.CategoryRepository;
 import com.mycompany.model.transaction.TransactionRepository;
+import com.mycompany.model.user.User;
 import com.mycompany.model.user.UserRepository;
 import com.nimbusds.jose.shaded.json.JSONArray;
 import com.nimbusds.jose.shaded.json.JSONObject;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 @CrossOrigin(origins = {"https://frontend-eight-lime-76.vercel.app/", "http://localhost:5173", "https://frontend-tossacoin.vercel.app"})
@@ -75,18 +78,42 @@ public class FundraisingController {
 
     @ResponseBody
     @PostMapping("/createFundraising")
-    public void createFundraising(Authentication authentication, @RequestBody String data)  {
-//        data = data.replace("createFundraising?", "");
-//
-//        Fundraising fundraising = jsonToFund(new org.json.JSONObject(data), authentication.getName());
-//        fundraisingRepository.save(fundraising);
-//
-//        return fundraisingToJSON(fundraising);
+    public JSONObject createFundraising(Authentication authentication, @RequestBody String data)  {
 
-        Collection<? extends GrantedAuthority> auth = authentication.getAuthorities();
-        System.out.println(auth);
+        JSONObject jsonObject = new JSONObject();
+        org.json.JSONObject request = new org.json.JSONObject(data);
 
-        System.out.println(data);
+        User owner = userRepository.getUserByEmail(authentication.getName());
+        Category category = categoryRepository.findByName(request.getString("category"));
+        List<Category> categoryList = new ArrayList<>();
+        categoryList.add(category);
+        Date date = new Date();
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MMM-dd", Locale.getDefault());
+            date = formatter.parse(request.getString("date"));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        Date today = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        Fundraising fundraising = new Fundraising();
+        fundraising.setTitle(request.getString("title"));
+        fundraising.setGoal(request.getInt("goal"));
+        fundraising.setOwner(owner);
+        fundraising.setCategory(categoryList);
+        fundraising.setAvailable(true);
+        fundraising.setDescription(request.getString("description"));
+        fundraising.setFundraisingEnd(date);
+        fundraising.setFundraisingStart(today);
+
+        fundraisingRepository.save(fundraising);
+
+        fundraising = fundraisingRepository.getFundraisingByTitle(request.getString("title"));
+
+        jsonObject.put("id", fundraising.getId());
+
+        return jsonObject;
 
     }
 
