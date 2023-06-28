@@ -3,11 +3,9 @@ package com.mycompany;
 import com.mycompany.model.category.Category;
 import com.mycompany.model.fundraising.Fundraising;
 import com.mycompany.model.fundraising.FundraisingRepository;
-import com.mycompany.model.image.Image;
 import com.mycompany.model.transaction.TransactionRepository;
 import com.mycompany.model.user.User;
 import com.mycompany.model.user.UserRepository;
-import com.mycompany.utilts.ImageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.nimbusds.jose.shaded.json.JSONObject;
@@ -19,7 +17,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @CrossOrigin(origins = {"https://frontend-eight-lime-76.vercel.app/", "http://localhost:5173", "https://frontend-tossacoin.vercel.app"})
 @RestController
-@RequestMapping()
 public class AdminController {
 
     @Autowired
@@ -31,14 +28,14 @@ public class AdminController {
 
     //uzytkownicy
     @GetMapping("/admin/users")
-    public JSONArray getUsers(){
+    public JSONObject getUsers(){
         List<User> users = userRepository.findAll();
         return getUsersInfo(users);
     }
 
     //zbiorki
-    @RequestMapping(value = "/admin/funds", method = GET)
-    public JSONArray getFunds(){
+    @GetMapping("/admin/funds")
+    public JSONObject getFunds(){
         List<Fundraising> fundraisings = fundraisingRepository.findAll();
         return getFundraisings(fundraisings);
     }
@@ -62,13 +59,14 @@ public class AdminController {
     }
 
 
-    JSONArray getUsersInfo(List<User> users){
+    JSONObject getUsersInfo(List<User> users){
         JSONArray jsonArray = new JSONArray();
         for(User user : users){
             jsonArray.add(getUserInfo(user));
         }
-
-        return jsonArray;
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("users", jsonArray);
+        return jsonObject;
     }
 
     JSONObject getUserInfo(User user){
@@ -96,12 +94,14 @@ public class AdminController {
 
     }
 
-    public JSONArray getFundraisings(List<Fundraising> funds){
+    public JSONObject getFundraisings(List<Fundraising> funds){
         JSONArray jsonArray = new JSONArray();
         for(Fundraising fundraising : funds){
             jsonArray.add(fundraisingToJSON(fundraising));
         }
-        return jsonArray;
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("funds", jsonArray);
+        return jsonObject;
     }
 
     public JSONObject fundraisingToJSON(Fundraising fund){
@@ -113,6 +113,7 @@ public class AdminController {
         jsonObj.put("title", fund.getTitle());
         jsonObj.put("collected_money",fund.getCollectedMoney());
         jsonObj.put("goal", fund.getGoal());
+        jsonObj.put("image", fund.getPictures());
         jsonObj.put("owner_name", fund.getOwner().getName());
         jsonObj.put("owner_surname", fund.getOwner().getSurname());
         jsonObj.put("description", fund.getDescription());
@@ -128,13 +129,7 @@ public class AdminController {
         JSONArray transactions = getTransactionCount(fund.getId());
         jsonObj.put("transactions", transactions);
 
-        JSONArray pictures = new JSONArray();
-        List<Image> imageList = fund.getPictures();
-        for (Image image: imageList) {
-            pictures.add(ImageUtil.decompressImage(image.getPicture()));
-        }
-
-        jsonObj.put("pictures", pictures);
+        System.out.println(jsonObj);
 
         return jsonObj;
     }
