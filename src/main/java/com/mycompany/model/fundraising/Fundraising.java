@@ -1,13 +1,13 @@
 package com.mycompany.model.fundraising;
 
 import com.mycompany.model.category.Category;
+import com.mycompany.model.image.Image;
 import lombok.*;
 
 import com.mycompany.model.user.User;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -17,7 +17,6 @@ import java.util.List;
 @Entity
 public class Fundraising {
     @Id
-    @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -41,8 +40,8 @@ public class Fundraising {
     @Temporal(TemporalType.DATE)
     private Date fundraisingEnd;
 
-    @Type(type="text")
-    private String pictures;
+    @OneToMany
+    private List<Image> pictures;
 
     @Type(type="text")
     private String description;
