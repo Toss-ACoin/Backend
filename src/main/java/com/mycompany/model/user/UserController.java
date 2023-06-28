@@ -3,7 +3,9 @@ package com.mycompany.model.user;
 import com.mycompany.model.category.Category;
 import com.mycompany.model.fundraising.Fundraising;
 import com.mycompany.model.fundraising.FundraisingRepository;
+import com.mycompany.model.image.Image;
 import com.mycompany.model.transaction.TransactionRepository;
+import com.mycompany.utilts.ImageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -112,14 +114,12 @@ public class UserController {
     public com.nimbusds.jose.shaded.json.JSONObject fundraisingToJSON(Fundraising fund){
         com.nimbusds.jose.shaded.json.JSONObject jsonObj = new com.nimbusds.jose.shaded.json.JSONObject();
 
-
         jsonObj.put("id", fund.getId());
         jsonObj.put("fundraising_start",fund.getFundraisingStart());
         jsonObj.put("fundraising_end", fund.getFundraisingEnd());
         jsonObj.put("title", fund.getTitle());
         jsonObj.put("collected_money",fund.getCollectedMoney());
         jsonObj.put("goal", fund.getGoal());
-        jsonObj.put("image", fund.getPictures());
         jsonObj.put("owner_name", fund.getOwner().getName());
         jsonObj.put("owner_surname", fund.getOwner().getSurname());
         jsonObj.put("description", fund.getDescription());
@@ -135,7 +135,13 @@ public class UserController {
         com.nimbusds.jose.shaded.json.JSONArray transactions = getTransactionCount(fund.getId());
         jsonObj.put("transactions", transactions);
 
-        System.out.println(jsonObj);
+        com.nimbusds.jose.shaded.json.JSONArray pictures = new com.nimbusds.jose.shaded.json.JSONArray();
+        List<Image> imageList = fund.getPictures();
+        for (Image image: imageList) {
+            pictures.add(ImageUtil.decompressImage(image.getPicture()));
+        }
+
+        jsonObj.put("pictures", pictures);
 
         return jsonObj;
     }

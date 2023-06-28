@@ -133,8 +133,6 @@ public class FundraisingController {
     }
     public JSONObject fundraisingToJSON(Fundraising fund){
         JSONObject jsonObj = new JSONObject();
-
-
         jsonObj.put("id", fund.getId());
         jsonObj.put("fundraising_start",fund.getFundraisingStart());
         jsonObj.put("fundraising_end", fund.getFundraisingEnd());
@@ -163,8 +161,6 @@ public class FundraisingController {
         }
 
         jsonObj.put("pictures", pictures);
-
-        //System.out.println(jsonObj);
 
         return jsonObj;
     }
