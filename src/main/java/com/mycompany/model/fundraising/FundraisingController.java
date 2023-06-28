@@ -2,9 +2,11 @@ package com.mycompany.model.fundraising;
 
 import com.mycompany.model.category.Category;
 import com.mycompany.model.category.CategoryRepository;
+import com.mycompany.model.image.Image;
 import com.mycompany.model.transaction.TransactionRepository;
 import com.mycompany.model.user.User;
 import com.mycompany.model.user.UserRepository;
+import com.mycompany.utilts.ImageUtil;
 import com.nimbusds.jose.shaded.json.JSONArray;
 import com.nimbusds.jose.shaded.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,7 +141,6 @@ public class FundraisingController {
         jsonObj.put("title", fund.getTitle());
         jsonObj.put("collected_money",fund.getCollectedMoney());
         jsonObj.put("goal", fund.getGoal());
-        jsonObj.put("image", fund.getPictures());
         jsonObj.put("owner_name", fund.getOwner().getName());
         jsonObj.put("owner_surname", fund.getOwner().getSurname());
         jsonObj.put("description", fund.getDescription());
@@ -155,7 +156,15 @@ public class FundraisingController {
         JSONArray transactions = getTransactionCount(fund.getId());
         jsonObj.put("transactions", transactions);
 
-        System.out.println(jsonObj);
+        JSONArray pictures = new JSONArray();
+        List<Image> imageList = fund.getPictures();
+        for (Image image: imageList) {
+            pictures.add(ImageUtil.decompressImage(image.getPicture()));
+        }
+
+        jsonObj.put("pictures", pictures);
+
+        //System.out.println(jsonObj);
 
         return jsonObj;
     }
