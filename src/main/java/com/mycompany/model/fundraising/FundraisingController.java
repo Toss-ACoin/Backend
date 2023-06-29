@@ -54,19 +54,19 @@ public class FundraisingController {
     @GetMapping("/search")
     public JSONObject searchByFunds(@RequestParam(name = "phrase")String phrase, @RequestParam(name = "page") int page){
         Page<Fundraising> funds;
-        funds = fundraisingRepository.findAllByTitleContainsOrDescriptionContains(phrase, phrase, PageRequest.of(page, 6));
+        funds = fundraisingRepository.findAllByAvailableIsTrueAndTitleContains(phrase, PageRequest.of(page, 6));
         JSONArray jsonArray = new JSONArray();
-        int fundCount = 0;
+        int fundsCount = 0;
         for(Fundraising fund: funds) {
-            if(fund.isAvailable() && fund.getFundraisingEnd().after(new Date())){
+            if(fund.getFundraisingEnd().after(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()))){
                 jsonArray.add(fundraisingToJSON(fund));
-                fundCount++;
+                fundsCount++;
             }
 
         }
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("array", jsonArray);
-        jsonObject.put("pages", fundCount/6);
+        jsonObject.put("pages", fundsCount/6);
 
         return jsonObject;
     }
