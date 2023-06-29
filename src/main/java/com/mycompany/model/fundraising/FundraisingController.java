@@ -118,6 +118,7 @@ public class FundraisingController {
 
         fundraisingRepository.save(fundraising);
 
+
 //        fundraising = fundraisingRepository.getFundraisingByTitle(request.getString("title"));
 
 //        jsonObject.put("id", fundraising.getId());
