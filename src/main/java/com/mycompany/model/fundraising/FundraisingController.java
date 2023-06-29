@@ -56,17 +56,17 @@ public class FundraisingController {
         Page<Fundraising> funds;
         funds = fundraisingRepository.findAllByAvailableIsTrueAndTitleContains(phrase, PageRequest.of(page, 6));
         JSONArray jsonArray = new JSONArray();
+        System.out.println(funds);
         int fundsCount = 0;
         for(Fundraising fund: funds) {
             if(fund.getFundraisingEnd().after(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()))){
                 jsonArray.add(fundraisingToJSON(fund));
-                fundsCount++;
             }
 
         }
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("array", jsonArray);
-        jsonObject.put("pages", fundsCount/6);
+        jsonObject.put("pages", funds.getTotalPages());
 
         return jsonObject;
     }
