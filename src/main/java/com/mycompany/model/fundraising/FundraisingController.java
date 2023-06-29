@@ -96,11 +96,14 @@ public class FundraisingController {
         categoryList.add(category);
         Date date = new Date();
         try {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MMM-dd", Locale.getDefault());
-            date = formatter.parse(request.getString("date"));
+            LocalDate dateTemp = LocalDate.parse(request.getString("date"));
+            //SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MMM-dd", Locale.getDefault());
+            date = Date.from(dateTemp.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
         }catch (Exception e){
             e.printStackTrace();
         }
+        System.out.println(date);
 
         Date today = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
 
