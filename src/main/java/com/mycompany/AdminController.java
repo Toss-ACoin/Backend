@@ -15,8 +15,6 @@ import com.nimbusds.jose.shaded.json.JSONObject;
 import java.util.List;
 import com.nimbusds.jose.shaded.json.*;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-
 @CrossOrigin(origins = {"https://frontend-eight-lime-76.vercel.app/", "http://localhost:5173", "https://frontend-tossacoin.vercel.app"})
 @RestController
 public class AdminController {
@@ -39,7 +37,7 @@ public class AdminController {
     @GetMapping("/admin/funds")
     public JSONObject getFunds(){
         List<Fundraising> fundraisings = fundraisingRepository.findAll();
-        return getFundraisings(fundraisings);
+        return getFundraising(fundraisings);
     }
 
     //toggle zbiorek
@@ -96,7 +94,7 @@ public class AdminController {
 
     }
 
-    public JSONObject getFundraisings(List<Fundraising> funds){
+    public JSONObject getFundraising(List<Fundraising> funds){
         JSONArray jsonArray = new JSONArray();
         for(Fundraising fundraising : funds){
             jsonArray.add(fundraisingToJSON(fundraising));

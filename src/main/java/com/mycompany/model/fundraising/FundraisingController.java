@@ -54,11 +54,11 @@ public class FundraisingController {
     @GetMapping("/search")
     public JSONObject searchByFunds(@RequestParam(name = "phrase")String phrase, @RequestParam(name = "page") int page){
         Page<Fundraising> funds;
-        funds = fundraisingRepository.findAllByTitleContainsOrDescriptionContains(phrase, phrase, PageRequest.of(page, 6));
+        funds = fundraisingRepository.findAllByAvailableIsTrueAndTitleContains(phrase, PageRequest.of(page, 6));
         JSONArray jsonArray = new JSONArray();
         int fundCount = 0;
         for(Fundraising fund: funds) {
-            if(fund.isAvailable() && fund.getFundraisingEnd().after(new Date())){
+            if(fund.getFundraisingEnd().after(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()))){
                 jsonArray.add(fundraisingToJSON(fund));
                 fundCount++;
             }
@@ -66,7 +66,7 @@ public class FundraisingController {
         }
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("array", jsonArray);
-        jsonObject.put("pages", fundCount/6);
+        jsonObject.put("pages", funds.getTotalPages());
 
         return jsonObject;
     }
@@ -96,8 +96,10 @@ public class FundraisingController {
         categoryList.add(category);
         Date date = new Date();
         try {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            date = formatter.parse(request.getString("date"));
+            LocalDate dateTemp = LocalDate.parse(request.getString("date"));
+            //SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MMM-dd", Locale.getDefault());
+            date = Date.from(dateTemp.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
         }catch (Exception e){
             e.printStackTrace();
         }

@@ -71,6 +71,8 @@ public class UserController {
         jsonObject.put("role", user.getRole());
         jsonObject.put("login_type", user.getLoginType());
         jsonObject.put("name", user.getName());
+        jsonObject.put("surname", user.getSurname());
+        jsonObject.put("birth_date", user.getBirthDate());
         jsonObject.put("bank_number", user.getBankNumber());
         jsonObject.put("pesel", user.getPesel());
         jsonObject.put("phone_number", user.getPhoneNumber());
@@ -99,16 +101,6 @@ public class UserController {
 
     }
 
-    @PatchMapping
-    @ResponseBody
-    com.nimbusds.jose.shaded.json.JSONObject editUser(Authentication authentication, @RequestBody String data){
-        JSONObject jsonObject = new JSONObject(data);
-        User user = userRepository.getUserByEmail(authentication.getName());
-
-
-
-
-    }
 
     public com.nimbusds.jose.shaded.json.JSONArray getTransactionCount(long id){
         com.nimbusds.jose.shaded.json.JSONArray jsonArray = new com.nimbusds.jose.shaded.json.JSONArray();

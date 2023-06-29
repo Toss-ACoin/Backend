@@ -19,6 +19,7 @@ public interface FundraisingRepository extends JpaRepository<Fundraising, Long> 
     List<Fundraising> findAllByAvailableIsTrueOrderByFundraisingStart();
     Optional<Fundraising> findById(Long id);
     Fundraising getFundraisingByTitle(String title);
-    Page<Fundraising> findAllByTitleContainsOrDescriptionContains(String title, String description, Pageable pageable);
+
+    Page<Fundraising> findAllByAvailableIsTrueAndTitleContains(String title, Pageable pageable);
 
 }

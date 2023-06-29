@@ -45,7 +45,6 @@ public class ImageController {
             image = imageOptional.get();
             Optional<Fundraising> optionalFundraising = fundraisingRepository.findById(id);
             if(optionalFundraising.isPresent()){
-                System.out.println();
                 Fundraising fundraising = optionalFundraising.get();
                 List<Image> imageList = fundraising.getPictures();
                 imageList.add(image);
