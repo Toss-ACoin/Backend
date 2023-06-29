@@ -96,7 +96,7 @@ public class FundraisingController {
         categoryList.add(category);
         Date date = new Date();
         try {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MMM-dd", Locale.getDefault());
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             date = formatter.parse(request.getString("date"));
         }catch (Exception e){
             e.printStackTrace();
@@ -116,9 +116,9 @@ public class FundraisingController {
 
         fundraisingRepository.save(fundraising);
 
-        fundraising = fundraisingRepository.getFundraisingByTitle(request.getString("title"));
+//        fundraising = fundraisingRepository.getFundraisingByTitle(request.getString("title"));
 
-        jsonObject.put("id", fundraising.getId());
+//        jsonObject.put("id", fundraising.getId());
 
         return jsonObject;
 
