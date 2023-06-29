@@ -99,16 +99,6 @@ public class UserController {
 
     }
 
-    @PatchMapping
-    @ResponseBody
-    com.nimbusds.jose.shaded.json.JSONObject editUser(Authentication authentication, @RequestBody String data){
-        JSONObject jsonObject = new JSONObject(data);
-        User user = userRepository.getUserByEmail(authentication.getName());
-
-
-
-
-    }
 
     public com.nimbusds.jose.shaded.json.JSONArray getTransactionCount(long id){
         com.nimbusds.jose.shaded.json.JSONArray jsonArray = new com.nimbusds.jose.shaded.json.JSONArray();
