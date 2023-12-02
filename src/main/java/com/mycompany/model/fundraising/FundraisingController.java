@@ -24,7 +24,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 
-@CrossOrigin(origins = {"https://frontend-eight-lime-76.vercel.app/", "http://localhost:5173", "https://frontend-tossacoin.vercel.app"})
+//@CrossOrigin(origins = {"https://frontend-eight-lime-76.vercel.app/", "http://localhost:5173", "https://frontend-tossacoin.vercel.app"})
 @RestController
 public class FundraisingController {
 
@@ -40,6 +40,7 @@ public class FundraisingController {
     @GetMapping("/home")
     @ResponseBody
     JSONObject getAllFunds(){
+        System.out.println("home");
         List<Fundraising> funds = fundraisingRepository.findAllByAvailableIsTrueOrderByFundraisingStart();
         JSONArray jsonArray = new JSONArray();
         for(Fundraising fund: funds) {
@@ -52,7 +53,10 @@ public class FundraisingController {
     }
 
     @GetMapping("/search")
-    public JSONObject searchByFunds(@RequestParam(name = "phrase")String phrase, @RequestParam(name = "page") int page){
+    public JSONArray searchByFunds(){
+        System.out.println("search");
+        String phrase = "";
+        int page = 0;
         Page<Fundraising> funds;
         Date today = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
         funds = fundraisingRepository.findAllByAvailableIsTrueAndTitleContainsAndFundraisingEndAfter(phrase, today, PageRequest.of(page, 6));
@@ -65,13 +69,14 @@ public class FundraisingController {
         jsonObject.put("array", jsonArray);
         jsonObject.put("pages", funds.getTotalPages());
 
-        return jsonObject;
+        return jsonArray;
     }
 
 
     @GetMapping("/fundraising")
     @ResponseBody
     public JSONObject getFundraising(@RequestParam(name = "id")Long id){
+        System.out.println("fund");
         Optional<Fundraising> optionalFundraising = fundraisingRepository.findById(id);
         if(optionalFundraising.isPresent()){
             return fundraisingToJSON(optionalFundraising.get());

@@ -60,8 +60,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .httpBasic().authenticationEntryPoint(entryPoint)
                 .and()
-                    .oauth2Login()
-                .and()
                     .logout().permitAll()
                 .and()
                     .exceptionHandling().accessDeniedPage("/403")

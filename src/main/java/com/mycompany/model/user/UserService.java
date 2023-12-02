@@ -22,7 +22,7 @@ public class UserService {
        user.setPassword(encodedPassword);
        user.setBlocked(false);
        user.setLoginType(LoginType.BASIC);
-       user.setRole(UserRole.USER);
+       user.setRole(UserRole.ROLE_USER);
 
        userRepository.save(user);
 

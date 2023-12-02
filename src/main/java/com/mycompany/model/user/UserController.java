@@ -16,7 +16,6 @@ import org.json.*;
 import java.util.Collection;
 import java.util.List;
 
-@CrossOrigin(origins = {"https://frontend-eight-lime-76.vercel.app/", "http://localhost:5173", "https://frontend-tossacoin.vercel.app"})
 @RestController
 public class UserController {
 
@@ -45,14 +44,14 @@ public class UserController {
     com.nimbusds.jose.shaded.json.JSONObject registerUser(@RequestBody String data){
         com.nimbusds.jose.shaded.json.JSONObject status = new com.nimbusds.jose.shaded.json.JSONObject();
         //System.out.println("register");
-        //System.out.println(data);
+        System.out.println(data);
         JSONObject jsonObject = new JSONObject(data);
         JSONObject value =  jsonObject.getJSONObject("value");
         String name = value.getString("name");
         String email = value.getString("email");
         String password = value.getString("password");
         User user = userService.registerUser(name, email, password);
-        status.put("User", user!=null);
+        status.put("User", user);
         return status;
     }
 
