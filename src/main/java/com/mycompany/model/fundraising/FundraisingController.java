@@ -53,9 +53,9 @@ public class FundraisingController {
     }
 
     @GetMapping("/search")
-    public JSONArray searchByFunds(){
+    public JSONArray searchByFunds(@RequestParam(name = "phrase")String phrase){
         System.out.println("search");
-        String phrase = "";
+        //String phrase = "";
         int page = 0;
         Page<Fundraising> funds;
         Date today = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
