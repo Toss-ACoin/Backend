@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.Optional;
 
 
-@CrossOrigin(origins = {"https://frontend-eight-lime-76.vercel.app/", "http://localhost:5173", "https://frontend-tossacoin.vercel.app"})
+//@CrossOrigin(origins = {"https://frontend-eight-lime-76.vercel.app/", "http://localhost:5173", "https://frontend-tossacoin.vercel.app"})
 @RestController
 public class TransactionController {
 
@@ -30,18 +30,32 @@ public class TransactionController {
     @PostMapping("/transaction")
     public JSONObject saveTransaction(Authentication authentication, @RequestBody String data){
         JSONObject jsonObject = new JSONObject();
+        org.json.JSONObject tempObject = new org.json.JSONObject(data);
+        long id = tempObject.getLong("id");
+        int amount = tempObject.getInt("amount");
         Transaction transaction = new Transaction();
-        transaction.setFundraisingId(1L);
+        transaction.setFundraisingId(id);
         transaction.setDate(Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
-        transaction.setAmount(50);
+        transaction.setAmount(amount);
         transaction.setTransactionType(TransactionType.PAYPAL);
         User user = userRepository.getUserByEmail(authentication.getName());
         transaction.setPayerId(user.getId());
         transactionRepository.save(transaction);
-        updateFundraising(50, 1L);
+        updateFundraising(amount, id);
+        boolean isFundDone = checkIfGoalIsAchived(id);
 
         jsonObject.put("complete", true);
+        jsonObject.put("isDone", isFundDone);
         return jsonObject;
+    }
+
+    private boolean checkIfGoalIsAchived(long id){
+        Optional<Fundraising> fundraisingOptional = fundraisingRepository.findById(id);
+        if(fundraisingOptional.isPresent()){
+            Fundraising temp = fundraisingOptional.get();
+            return temp.getGoal() >= temp.getCollectedMoney();
+        }
+        return false;
     }
 
     private void updateFundraising(int amount, long id){
