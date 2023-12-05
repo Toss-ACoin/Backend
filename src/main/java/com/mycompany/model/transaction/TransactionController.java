@@ -53,7 +53,7 @@ public class TransactionController {
         Optional<Fundraising> fundraisingOptional = fundraisingRepository.findById(id);
         if(fundraisingOptional.isPresent()){
             Fundraising temp = fundraisingOptional.get();
-            return temp.getGoal() >= temp.getCollectedMoney();
+            return temp.getCollectedMoney() >= temp.getGoal();
         }
         return false;
     }
