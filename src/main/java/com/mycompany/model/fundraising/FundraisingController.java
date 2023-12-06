@@ -3,6 +3,7 @@ package com.mycompany.model.fundraising;
 import com.mycompany.model.category.Category;
 import com.mycompany.model.category.CategoryRepository;
 import com.mycompany.model.image.Image;
+import com.mycompany.model.transaction.Transaction;
 import com.mycompany.model.transaction.TransactionRepository;
 import com.mycompany.model.user.User;
 import com.mycompany.model.user.UserRepository;
@@ -50,6 +51,38 @@ public class FundraisingController {
         jsonObject.put("array", jsonArray);
 
         return jsonObject;
+    }
+
+    @GetMapping("/amounts")
+    public JSONObject fundAmount(@RequestParam(name = "id")String id){
+        Long fundId = Long.parseLong(id);
+        Fundraising fundraising = fundraisingRepository.getById(fundId);
+        List<Transaction> transactions = transactionRepository.findAllByFundraisingId(fundId);
+        if(transactions==null){
+            return new JSONObject();
+        }
+        JSONArray jsonArray = new JSONArray();
+        Date previousDate = fundraising.getFundraisingStart();
+        int dayAmount=0;
+        for(Transaction transaction: transactions){
+            if(previousDate.compareTo(transaction.getDate())!=0){
+                JSONObject day = new JSONObject();
+                day.put("date", previousDate);
+                day.put("amount", dayAmount);
+                jsonArray.add(day);
+                dayAmount=0;
+                previousDate = transaction.getDate();
+            }
+            dayAmount+=transaction.getAmount();
+
+        }
+        JSONObject day = new JSONObject();
+        day.put("date", previousDate);
+        day.put("amount", dayAmount);
+        jsonArray.add(day);
+        JSONObject res = new JSONObject();
+        res.put("dates", jsonArray);
+        return res;
     }
 
     @GetMapping("/search")

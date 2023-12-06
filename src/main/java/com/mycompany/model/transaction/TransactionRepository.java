@@ -10,4 +10,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     @Query("SELECT t.amount, COUNT(t.amount) FROM Transaction t WHERE t.fundraisingId = :id GROUP BY t.amount")
     List<String> selectAmountCount(@Param("id") long id);
+
+    List<Transaction> findAllByFundraisingId(Long id);
 }
