@@ -50,9 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/register").permitAll()
-                .antMatchers(HttpMethod.POST, "/register").permitAll()
-                .antMatchers(HttpMethod.OPTIONS, "/createFundraising", "/transaction", "/uploadImage").hasRole("USER")
-                .antMatchers(HttpMethod.POST, "/createFundraising", "/transaction", "/uploadImage").hasRole("USER")
+                .antMatchers(HttpMethod.POST, "/register", "/createFundraising", "/transaction").permitAll()
                 .antMatchers("/home", "/loginBasic", "/search", "/accessToken").permitAll()
                 .antMatchers(HttpMethod.PATCH, "/admin/user", "/admin/fund").hasRole("ADMIN")
                 .antMatchers( "/admin/users", "/admin/funds").hasRole("ADMIN")
