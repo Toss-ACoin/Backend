@@ -1,7 +1,7 @@
 --uzytkownicy
-insert into user (blocked, name, surname, email, password, pesel, role, birth_date, phone_number, login_type) values (false, 'Layney', 'Pharo', 'lpharo0@pcworld.com', '$2a$10$BF1oYBJi3Yyhb4lFggQijuUmZizAqBUDjmpACCEhS1q9ydAjx4iv', 78658411927, 'USER', '2003-06-15 12:14:25', 982151585, 'BASIC');
-insert into user (blocked, name, surname, email, password, pesel, role, birth_date, phone_number, login_type) values (false, 'Lou', 'Longbone', 'llongbone1@quantcast.com', '$2a$10$BF1oYBJi3Yyhb4lFggQijuUmZizAqBUDjmpACCEhS1q9ydAjx4iv', 17766465358, 'USER', '1977-08-29 18:03:58', 582439097, 'BASIC');
-insert into user (blocked, name, surname, email, password, pesel, role, birth_date, phone_number, login_type) values (false, 'Fernande', 'Chew', 'fchew2@123-reg.co.uk', '$2a$10$BF1oYBJi3Yyhb4lFggQijuUmZizAqBUDjmpACCEhS1q9ydAjx4iv', 17528824326, 'USER', '1979-12-06 22:46:25', 129884800, 'BASIC');
+insert into user (blocked, name, surname, email, password, pesel, role, birth_date, phone_number, login_type) values (false, 'Layney', 'Pharo', 'lpharo0@pcworld.com', '$2a$10$BF1oYBJi3Yyhb4lFggQijuUmZizAqBUDjmpACCEhS1q9ydAjx4iv', 78658411927, 'ROLE_USER', '2003-06-15 12:14:25', 982151585, 'BASIC');
+insert into user (blocked, name, surname, email, password, pesel, role, birth_date, phone_number, login_type) values (false, 'Lou', 'Longbone', 'llongbone1@quantcast.com', '$2a$10$BF1oYBJi3Yyhb4lFggQijuUmZizAqBUDjmpACCEhS1q9ydAjx4iv', 17766465358, 'ROLE_USER', '1977-08-29 18:03:58', 582439097, 'BASIC');
+insert into user (blocked, name, surname, email, password, pesel, role, birth_date, phone_number, login_type) values (false, 'Fernande', 'Chew', 'fchew2@123-reg.co.uk', '$2a$10$BF1oYBJi3Yyhb4lFggQijuUmZizAqBUDjmpACCEhS1q9ydAjx4iv', 17528824326, 'ROLE_USER', '1979-12-06 22:46:25', 129884800, 'BASIC');
 
 
 --kategorie;
